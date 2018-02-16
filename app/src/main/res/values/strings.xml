@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">ClevyTest</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_main2">EducationActivity</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_final">FinalActivity</string>
+
+    <string name="choice_apple">Apple</string>
+    <string name="choice_orange">Orange</string>
+    <string name="choice_cat">Cat</string>
+    <string name="choice_dog">Dog</string>
+
+
+    <string name="preference_name">key_store</string>
+
+</resources>
