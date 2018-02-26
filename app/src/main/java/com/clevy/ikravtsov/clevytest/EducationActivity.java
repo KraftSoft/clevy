@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.clevy.ikravtsov.clevytest.TestConstants.*;
+import static com.clevy.ikravtsov.clevytest.AppConstants.*;
 
 public class EducationActivity extends AppCompatActivity {
 
@@ -153,6 +153,8 @@ public class EducationActivity extends AppCompatActivity {
 
                 intentTest.putStringArrayListExtra("wordsList", enWordsList);
 
+                intentTest.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                 context.startActivity(intentTest);
                 finalizeActivity();
             }
@@ -160,7 +162,6 @@ public class EducationActivity extends AppCompatActivity {
 
         btnNext.setOnClickListener(startTest);
 
-        Button closeBtn = (Button) findViewById(R.id.closeCircle);
         View.OnClickListener closeWin = new View.OnClickListener() {
 
             @Override
@@ -168,9 +169,6 @@ public class EducationActivity extends AppCompatActivity {
                 finalizeActivity();
             }
         };
-
-        closeBtn.setOnClickListener(closeWin);
-
 
     }
 
@@ -186,5 +184,10 @@ public class EducationActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

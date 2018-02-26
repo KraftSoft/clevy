@@ -16,21 +16,16 @@ import android.widget.Toast;
 
 public class FinalActivity extends AppCompatActivity {
 
-    private PendingIntent pendingIntent;
+    private PendingIntent pendingEducateIntent, pendingNotifyIntent;
     private Integer currentLessonNumb;
-    private SharedPreferences sharedPref;
+    Button btnStartNow, btnStartWait;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final);
 
-        Button btnFinish = (Button) findViewById(R.id.nextTest);
-        Button btnClose = (Button) findViewById(R.id.closeOnFinish);
-        TextView textCongratulate = (TextView) findViewById(R.id.textCongratulate);
-        textCongratulate.setText("МОЛОДЕЦ ПРАВИЛЬНО!");
-
-        sharedPref = this.getSharedPreferences(
+        SharedPreferences sharedPref = this.getSharedPreferences(
                 getString(R.string.preference_name), Context.MODE_PRIVATE);
 
         currentLessonNumb = sharedPref.getInt("lessonNumb", 0);
@@ -39,61 +34,103 @@ public class FinalActivity extends AppCompatActivity {
         editor.putInt("lessonNumb", ++currentLessonNumb);
         editor.apply();
 
+
+        btnStartNow = (Button) findViewById(R.id.nextTest);
+        btnStartWait = (Button) findViewById(R.id.waitForStart);
+
+        if (currentLessonNumb >= 3) {
+            editor = sharedPref.edit();
+            editor.putInt("lessonNumb", 0);
+            editor.apply();
+        }
+
+        TextView textCongratulate = (TextView) findViewById(R.id.textCongratulate);
+        textCongratulate.setText("МОЛОДЕЦ, ПРАВИЛЬНО!");
+
+
         final Context context = this;
 
-        Intent alarmIntent = new Intent(FinalActivity.this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(FinalActivity.this, 0, alarmIntent, 0);
+        Intent alarmIntent = new Intent(FinalActivity.this, AlarmEducationReceiver.class);
+        Intent notifyIntent = new Intent(FinalActivity.this, AlarmNotifyReceiver.class);
+
+        pendingEducateIntent = PendingIntent.getBroadcast(FinalActivity.this, 0, alarmIntent, 0);
+        pendingNotifyIntent = PendingIntent.getBroadcast(FinalActivity.this, 0, notifyIntent, 0);
 
         View.OnClickListener goNext = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handleNext();
+                handleStartNow();
             }
         };
 
-        View.OnClickListener closeWin = new View.OnClickListener() {
+        View.OnClickListener delayedStart = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                set_alarms("Следущее занятие начнется через 15 минут");
                 handleFinish();
             }
         };
 
-        btnFinish.setOnClickListener(goNext);
-        btnClose.setOnClickListener(closeWin);
+        btnStartNow.setOnClickListener(goNext);
+        btnStartWait.setOnClickListener(delayedStart);
     }
 
-    public void handleNext() {
-        if (currentLessonNumb >= 3){
+    public  void set_alarms(String message) {
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        AlarmManager manager2 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt("lessonNumb", 0);
-            editor.apply();
+        long interval = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 
-            AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            int interval = 8000;
+        // TODO Do something with KITKAT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            assert manager != null;
+            manager.setExact(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + interval,
+                    pendingEducateIntent
+            );
 
-            // TODO Do something with KITKAT
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                assert manager != null;
-                manager.setExact(
-                        AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES/15/6,
-                        pendingIntent
-                );
-            }
-
-            Toast.makeText(this, "Следующий урок через 15 минут", Toast.LENGTH_SHORT).show();
+            assert manager2 != null;
+            manager2.setExact(
+                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + interval - 10000,
+                    pendingNotifyIntent
+            );
         }
-        else {
-            Intent intentEducate = new Intent(this, EducationActivity.class);
-            this.startActivity(intentEducate);
-        }
+
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+
+    }
+
+    public void handleStartNow() {
+
+        Intent intentEducate = new Intent(this, EducationActivity.class);
+        //intentEducate.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        this.startActivity(intentEducate);
 
         this.finish();
     }
+
 
     public void handleFinish() {
         this.finish();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(currentLessonNumb >= 3){
+            btnStartWait.setVisibility(View.VISIBLE);
+
+        }
+        else {
+            btnStartWait.setVisibility(View.INVISIBLE);
+            btnStartNow.setText("ПРОДОЛЖИТЬ");
+        }
+
     }
 
 }

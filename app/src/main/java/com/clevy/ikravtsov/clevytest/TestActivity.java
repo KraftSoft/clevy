@@ -15,7 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static com.clevy.ikravtsov.clevytest.TestConstants.keyCurrentIndex;
+import static com.clevy.ikravtsov.clevytest.AppConstants.keyCurrentIndex;
 
 
 public class TestActivity extends AppCompatActivity {
@@ -102,6 +102,8 @@ public class TestActivity extends AppCompatActivity {
                     editor.apply();
 
                     Intent intentFinal = new Intent(context, FinalActivity.class);
+                    intentFinal.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                     context.startActivity(intentFinal);
                     finalizeActivity();
                 }

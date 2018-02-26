@@ -3,75 +3,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="bottom"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical">
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/garfield_thumb_up" />
+
+        <TextView
+            android:id="@+id/textCongratulate"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:text="МОЛОДЕЦ, ПРАВИЛЬНО!"
+            android:textAlignment="center"
+            android:textColor="#212121"
+            android:textSize="20sp" />
 
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                app:srcCompat="@drawable/garfield_thumb_up" />
-
-            <TextView
-                android:id="@+id/textCongratulate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="МОЛОДЕЦ ПРАВИЛЬНО!"
-                android:textAlignment="center"
-                android:textColor="#212121"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text=""
-                android:textAlignment="center" />
-        </LinearLayout>
-
-        <RelativeLayout
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="match_parent"
-            android:layout_weight="3"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textAlignment="center" />
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/nextTest"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="50dp"
-                android:background="#0CC157"
-                android:gravity="center"
-                android:text="Продолжить"
-                android:textColor="#FFF"
-                android:textAlignment="center"
-                android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:orientation="vertical">
 
-            <Button
-                style="@style/Widget.AppCompat.Button.Small"
-                android:id="@+id/closeOnFinish"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:gravity="center"
-                android:layout_alignParentBottom="true"
-                android:text="Остановить"
-                android:textAlignment="center"
-                android:textColor="#000" />
-        </RelativeLayout>
+        <Button
+            android:id="@+id/nextTest"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circle_button"
+            android:text="Продолжить сейчас"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/waitForStart"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/circle_button_yellow"
+            android:text="Продолжить позже"
+            android:layout_gravity="center"
+            android:textColor="#212121"
+             />
 
     </LinearLayout>
 

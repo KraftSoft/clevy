@@ -11,14 +11,26 @@ import java.io.InputStream;
  * Created by ikravtsov on 10/02/2018.
  */
 
-public class TestConstants {
+public class AppConstants {
 
-    public static String keyCurrentWordTypeIndex = "word_type";
-    public static String keyCurrentIndex = "index";
+    final static String keyCurrentWordTypeIndex = "word_type";
+    final static String keyCurrentIndex = "index";
+
+    final static String keyPaid = "isAlreadyPaid";
+
+
+    final static String typeSubs = "subs";
+    final static String typeInApp = "inapp";
+
+    final static String unlimitSubId = "clevy_unlimit";
+
+    final static String mounthlySubId = "com.clevy.ikravtsov.mounthly_subscription";
+    final static String yearlySubId = "com.clevy.ikravtsov.yearly_subscription";
+
+    final static long TRIAL_DAYS_COUNT = 3;
 
     public static Integer defaultWordTypeIndex = 0;
     public static Integer defaultWordIndex = 0;
-
 
     public static String[] wordTypes = new String[]{"nouns", "verbs"};
 

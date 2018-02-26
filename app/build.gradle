@@ -1,27 +1,43 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        clevy {
+            keyAlias 'clevy.keystore'
+            keyPassword 'clevy1488'
+            storeFile file('/Applications/Android Studio.app/Contents/bin/clevy.keystore')
+            storePassword 'clevy1488'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.clevy.ikravtsov.clevytest"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 2
-        versionName "1.1"
+        versionCode 10
+        versionName "1.3.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        signingConfig signingConfigs.clevy
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.clevy
+        }
+        debug {
+            signingConfig signingConfigs.clevy
+            minifyEnabled true
         }
     }
     sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/noun'] } }
+    productFlavors {
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -30,4 +46,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.googlecode.json-simple:json-simple:1.1'
+    compile 'com.android.billingclient:billing:1.0'
 }
