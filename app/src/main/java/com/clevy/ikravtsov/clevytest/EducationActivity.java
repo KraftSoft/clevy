@@ -4,51 +4,60 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import java.io.IOException;
 
 import static com.clevy.ikravtsov.clevytest.AppConstants.*;
 
 public class EducationActivity extends AppCompatActivity {
 
-    Button btnNext;
+    Button btnNext, btnSound;
 
-    String wordEn, wordRu;
-    Integer currentWordIndex, wordTypeIndex;
     ImageView image;
-    JSONArray jsonWordsObjectsList;
-    String imageName;
     TextView textHint;
-    JSONObject jsonData;
-    ArrayList<String> enWordsList = new ArrayList<>();
-    JSONObject wordObj;
+    ProgressBar progressBar;
 
+    Integer resID, currentProgress;
+    SharedPreferences sharedPref;
+    Context context;
+    Boolean isTest;
+
+    private AssetManager mAssetManager;
+    private SoundPool mSoundPool;
+    int fooSound;
+
+    JsonLessonsHelper structHelper;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_main2);
+        setContentView(R.layout.content_educate);
 
-        // TODO use this
-        final Context context = this.getApplicationContext();
-
-        SharedPreferences sharedPref = context.getSharedPreferences(
+        sharedPref = this.getSharedPreferences(
                 getString(R.string.preference_name), Context.MODE_PRIVATE);
 
-        Integer lessonNumber = sharedPref.getInt("lessonNumb", 0);
-
+            Integer lessonNumber = sharedPref.getInt("lessonNumb", 0);
         if (lessonNumber == 0) {
             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             if (v != null) {
@@ -56,88 +65,46 @@ public class EducationActivity extends AppCompatActivity {
             }
         }
 
-        wordTypeIndex = sharedPref.getInt(keyCurrentWordTypeIndex, 0);
+        btnNext = findViewById(R.id.next);
+        textHint = findViewById(R.id.educateText);
+        btnSound = findViewById(R.id.play_sound);
 
-        if (wordTypeIndex >= wordTypes.length) {
-            wordTypeIndex = 0;
-            currentWordIndex = 0;
+        image = findViewById(R.id.educateImage);
+        progressBar = findViewById(R.id.progress_in_educate);
+
+        currentProgress = sharedPref.getInt(testProgress, 0);
+
+        progressBar.setMax(TEST_PACKAGE_SIZE);
+        progressBar.setProgress(currentProgress);
+
+
+        int savedBlockIndex = sharedPref.getInt(keyCurrentBlockIndex, 0);
+        int savedWordIndex = sharedPref.getInt(keyCurrentWordIndex, DEFAULT_WORD_INDEX);
+
+        isTest = sharedPref.getBoolean(isTestKey, false);
+
+        structHelper = JsonLessonsHelper.getInstance(this, savedBlockIndex, savedWordIndex);
+
+
+        mAssetManager = getAssets();
+        createNewSoundPool();
+        String enWord = structHelper.getCorrectEnWord().replaceAll(" ", "_");
+        fooSound = loadSound(enWord + ".mp3");
+
+        resID = structHelper.getResId(this);
+
+        if (isTest) {
+            btnSound.setVisibility(View.INVISIBLE);
+            textHint.setText("Пора проверять знания");
+            btnNext.setText("НАЧАТЬ!");
+            image.setBackground(ContextCompat.getDrawable(this, R.drawable.system_lets_start));
         }
-
         else {
-            jsonData = loadJSONFromAsset(this);
-
-            try {
-                assert jsonData != null;
-                jsonWordsObjectsList = (JSONArray) jsonData.get(wordTypes[wordTypeIndex]);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            currentWordIndex = sharedPref.getInt(keyCurrentIndex, defaultWordIndex);
-
-            assert jsonWordsObjectsList != null;
-            if (currentWordIndex < jsonWordsObjectsList.length() - 1) {
-                currentWordIndex++;
-            }
-            else {
-                currentWordIndex = 0;
-                wordTypeIndex++;
-            }
-
+            textHint.setText(structHelper.getCorrectRuWord() + " - " + structHelper.getCorrectEnWord());
+            image.setBackgroundResource(resID);
         }
 
-        if (wordTypeIndex >= wordTypes.length) {
-            wordTypeIndex = 0;
-            currentWordIndex = 0;
-        }
-
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(keyCurrentWordTypeIndex, wordTypeIndex);
-        editor.putInt(keyCurrentIndex, currentWordIndex);
-        editor.apply();
-
-
-        btnNext = (Button) findViewById(R.id.next);
-        textHint = (TextView) findViewById(R.id.educateText);
-        image = (ImageView) findViewById(R.id.educateImage);
-
-
-        try {
-            // Use actual words package
-            jsonWordsObjectsList = (JSONArray) jsonData.get(wordTypes[wordTypeIndex]);
-
-            JSONObject wordObj = (JSONObject) jsonWordsObjectsList.get(currentWordIndex);
-
-            wordEn = wordObj.getString("en");
-            wordRu = wordObj.getString("ru");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        imageName = wordTypes[wordTypeIndex] + "_" + wordEn;
-
-
-        final int resID = getResources().getIdentifier(imageName,
-                "drawable", getApplicationContext().getPackageName());
-
-        image.setBackgroundResource(resID);
-        textHint.setText(wordRu + " - " + wordEn);
-
-
-        for (int i=0; i < jsonWordsObjectsList.length(); ++i) {
-            try {
-                wordObj = (JSONObject) jsonWordsObjectsList.get(i);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                enWordsList.add((String) wordObj.get("en"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+        context = this;
 
         View.OnClickListener startTest = new View.OnClickListener() {
             @Override
@@ -145,31 +112,65 @@ public class EducationActivity extends AppCompatActivity {
 
                 Intent intentTest = new Intent(context, TestActivity.class);
 
-                intentTest.putExtra("correctAnswer", wordEn);
-                intentTest.putExtra("imageResId", resID);
-                intentTest.putExtra("currentWordIndex", currentWordIndex);
-                intentTest.putExtra("wordTypeIndex", wordTypeIndex);
-                intentTest.putExtra("correctAnswerRu", wordRu);
-
-                intentTest.putStringArrayListExtra("wordsList", enWordsList);
-
-                intentTest.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if(!isTest){
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt(keyCurrentBlockIndex, structHelper.getNewWordTypePos());
+                    editor.putInt(keyCurrentWordIndex, structHelper.getNewWordPosition());
+                    editor.apply();
+                }
 
                 context.startActivity(intentTest);
                 finalizeActivity();
             }
         };
 
-        btnNext.setOnClickListener(startTest);
-
-        View.OnClickListener closeWin = new View.OnClickListener() {
-
+        View.OnClickListener makeSound = new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                finalizeActivity();
+            public void onClick(View v) {
+                try {
+                    playSound(fooSound);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
 
+        btnNext.setOnClickListener(startTest);
+        btnSound.setOnClickListener(makeSound);
+
+    }
+
+    private int loadSound(String fileName) {
+        AssetFileDescriptor afd;
+        try {
+            afd = mAssetManager.openFd(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Не могу загрузить файл " + fileName,
+                    Toast.LENGTH_SHORT).show();
+            return -1;
+        }
+        return mSoundPool.load(afd, 1);
+    }
+
+    private int playSound(int sound) throws InterruptedException {
+        int mStreamID = 0;
+        if (sound > 0) {
+            mStreamID = mSoundPool.play(sound, 1, 1, 1, 0, 1);
+            Log.println(Log.INFO, "sound", "play sound");
+        }
+        else {
+            Log.println(Log.INFO, "sound", "no sound");
+        }
+        return mStreamID;
+    }
+
+    private void stopSound(int stramId){
+        mSoundPool.stop(stramId);
+    }
+
+    private void createNewSoundPool() {
+        mSoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
     }
 
     public void finalizeActivity() {

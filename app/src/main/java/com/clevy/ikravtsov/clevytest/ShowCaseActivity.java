@@ -1,18 +1,23 @@
 package com.clevy.ikravtsov.clevytest;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
@@ -25,11 +30,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static com.clevy.ikravtsov.clevytest.AppConstants.mounthlySubId;
+import static com.clevy.ikravtsov.clevytest.AppConstants.MONTHLY_SUBSCRIBE_ID;
 import static com.clevy.ikravtsov.clevytest.AppConstants.typeInApp;
 import static com.clevy.ikravtsov.clevytest.AppConstants.typeSubs;
-import static com.clevy.ikravtsov.clevytest.AppConstants.unlimitSubId;
-import static com.clevy.ikravtsov.clevytest.AppConstants.yearlySubId;
+import static com.clevy.ikravtsov.clevytest.AppConstants.UNLIMITED_SUBSCRIBE_ID;
+import static com.clevy.ikravtsov.clevytest.AppConstants.YEAR_SUBSCRIBE_ID;
 import static com.clevy.ikravtsov.clevytest.InAppProduct.BILLING_RESPONSE_RESULT_OK;
 import static com.clevy.ikravtsov.clevytest.InAppProduct.REQUEST_CODE_BUY;
 
@@ -41,7 +46,10 @@ public class ShowCaseActivity extends AppCompatActivity {
     HashMap<String, InAppProduct> possibleProductsMap;
 
 
-    Button buyMounthly, buyYearly, buyUnlimited;
+    Button buyMounthly, buyYearly, buyUnlimited, getFree, buttonDialogOk;
+    private Context context;
+    private Dialog dialog;
+    private View.OnClickListener onClickOk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +58,11 @@ public class ShowCaseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_case);
 
 
-        buyMounthly = (Button) findViewById(R.id.buyMonthly);
-        buyYearly = (Button) findViewById(R.id.buyYearly);
-        buyUnlimited = (Button) findViewById(R.id.buyUnlimited);
+        buyMounthly = findViewById(R.id.buyMonthly);
+        buyYearly = findViewById(R.id.buyYearly);
+        buyUnlimited = findViewById(R.id.buyUnlimited);
+
+        getFree = findViewById(R.id.b_get_free);
 
         serviceConnection = new ServiceConnection() {
             @Override
@@ -71,6 +81,9 @@ public class ShowCaseActivity extends AppCompatActivity {
         serviceIntent.setPackage("com.android.vending");
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
 
+        context = this;
+        dialog = new Dialog(context);
+
         View.OnClickListener buySomething = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,13 +91,13 @@ public class ShowCaseActivity extends AppCompatActivity {
                 buildShowCase();
                 switch (b.getId()) {
                     case R.id.buyMonthly:
-                        purchaseProduct(possibleProductsMap.get(mounthlySubId));
+                        purchaseProduct(possibleProductsMap.get(MONTHLY_SUBSCRIBE_ID));
                         break;
                     case R.id.buyYearly:
-                        purchaseProduct(possibleProductsMap.get(yearlySubId));
+                        purchaseProduct(possibleProductsMap.get(YEAR_SUBSCRIBE_ID));
                         break;
                     case R.id.buyUnlimited:
-                        purchaseProduct(possibleProductsMap.get(unlimitSubId));
+                        purchaseProduct(possibleProductsMap.get(UNLIMITED_SUBSCRIBE_ID));
                         break;
                     default:
                         break;
@@ -92,16 +105,59 @@ public class ShowCaseActivity extends AppCompatActivity {
             }
         };
 
+        onClickOk = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        };
+
+        View.OnClickListener showPopup = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                // Get the layout inflater
+
+                // Inflate and set the layout for the dialog
+                // Pass null as the parent view because its going in the dialog layout
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder.setView(R.layout.get_free_popup)
+                            // Add action buttons
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+                else {
+                    dialog.setContentView(R.layout.get_free_popup);
+                    dialog.show();
+                }
+
+
+            }
+        };
+
         buyMounthly.setOnClickListener(buySomething);
         buyYearly.setOnClickListener(buySomething);
         buyUnlimited.setOnClickListener(buySomething);
+
+        getFree.setOnClickListener(showPopup);
+
 
     }
 
     public void buildShowCase(){
 
-        String[] subscriptionsIds = new String[]{mounthlySubId, yearlySubId};
-        String[] inAppIds = new String[]{unlimitSubId};
+        String[] subscriptionsIds = new String[]{MONTHLY_SUBSCRIBE_ID, YEAR_SUBSCRIBE_ID};
+        String[] inAppIds = new String[]{UNLIMITED_SUBSCRIBE_ID};
 
         ArrayList<String> subsList = new ArrayList<>(Arrays.asList(subscriptionsIds));
         ArrayList<String> inAppsList = new ArrayList<>(Arrays.asList(inAppIds));

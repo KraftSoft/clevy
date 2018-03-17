@@ -92,6 +92,16 @@
             android:gravity="bottom"
             android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/b_get_free"
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:background="@drawable/circle_button"
+                android:text="Как получить бесплатно ?" />
         </LinearLayout>
 
     </LinearLayout>

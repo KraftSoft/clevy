@@ -15,4 +15,14 @@
 
     <string name="preference_name">key_store</string>
 
+    <string name="sharing_description">Сделайте пост на свой странице в vk,facebook или одноклассники.
+        Пост должен содержать текст и ссылку:
+    </string>
+
+    <string name="sharing_text_title">Текст:</string>
+    <string name="sharing_text_body">&quot;Мой ребенок использует Clevy!&quot;</string>
+
+    <string name="sharing_link_title">Ссылка:</string>
+    <string name="sharing_link_body">https://play.google.com/store/apps/details?id=com.clevy.ikravtsov.clevytest</string>
+
 </resources>

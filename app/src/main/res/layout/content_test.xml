@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="6"
+    android:weightSum="10"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -15,23 +15,36 @@
         android:orientation="vertical"
         tools:ignore="UseCompoundDrawables">
 
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_in_test"
+            android:progress="4"
+            android:max="9"
+            android:indeterminate="false"
+            />
+
         <ImageView
             android:id="@+id/testImage"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_margin="20dp"
+            android:layout_width="250dp"
+            android:layout_gravity="center"
+            android:layout_height="250dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/nouns_hamster"
             android:textAlignment="center"
             android:contentDescription="" />
 
         <TextView
             android:id="@+id/testText"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_marginTop="5dp"
             android:text="вопрос"
             android:textAlignment="center"
             android:textColor="#212121"
             android:textSize="30sp"
+            android:layout_gravity="center"
             android:layout_height="40dp" />
 
     </LinearLayout>
@@ -39,7 +52,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="4"
+        android:layout_weight="8"
         android:gravity="bottom"
         android:orientation="vertical">
 

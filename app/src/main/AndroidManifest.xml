@@ -11,11 +11,13 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/clevy_icon"
+        android:icon="@drawable/clevy_icon_2"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="HardcodedDebugMode">
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -50,6 +52,10 @@
             android:label="@string/title_activity_final"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ShowCaseActivity"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c763b65219a008a3395a4d22159d49ab3bab49e3" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

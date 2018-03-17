@@ -12,14 +12,19 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/progress_in_finish"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="20dp"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/garfield_thumb_up" />
+            android:progress="4"
+            android:max="9"
+            android:indeterminate="false" />
+
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/textCongratulate"
@@ -41,8 +46,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
         android:gravity="bottom"
         android:orientation="vertical">
 

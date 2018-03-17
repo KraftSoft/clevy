@@ -2019,7 +2019,7 @@
 "ru":	"молодой"
 }
 ],
-"adjectives":	[
+"adverb":	[
 {
 "en": 	"always",
 "ru":	"всегда"
@@ -2091,16 +2091,6 @@
 {
 "en": 	"very",
 "ru":	"очень"
-}
-],
-"conjuctions":	[
-{
-"en": 	"because",
-"ru":	"потому что"
-},
-{
-"en": 	"if",
-"ru":	"если"
 }
 ],
 "numbers":	[

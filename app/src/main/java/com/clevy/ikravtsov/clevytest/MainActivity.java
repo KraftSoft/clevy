@@ -1,16 +1,18 @@
 package com.clevy.ikravtsov.clevytest;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.SystemClock;
+import android.speech.tts.TextToSpeech;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -19,26 +21,39 @@ import android.widget.Toast;
 
 import com.android.vending.billing.IInAppBillingService;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static com.clevy.ikravtsov.clevytest.AppConstants.PROMO_1_ID;
+import static com.clevy.ikravtsov.clevytest.AppConstants.PROMO_2_ID;
+import static com.clevy.ikravtsov.clevytest.AppConstants.PROMO_3_ID;
 import static com.clevy.ikravtsov.clevytest.AppConstants.TRIAL_DAYS_COUNT;
-import static com.clevy.ikravtsov.clevytest.AppConstants.mounthlySubId;
+import static com.clevy.ikravtsov.clevytest.AppConstants.MONTHLY_SUBSCRIBE_ID;
+import static com.clevy.ikravtsov.clevytest.AppConstants.isTestKey;
+import static com.clevy.ikravtsov.clevytest.AppConstants.keyCurrentBlockIndex;
+import static com.clevy.ikravtsov.clevytest.AppConstants.keyCurrentWordIndex;
+import static com.clevy.ikravtsov.clevytest.AppConstants.testBlockPosKey;
+import static com.clevy.ikravtsov.clevytest.AppConstants.testProgress;
+import static com.clevy.ikravtsov.clevytest.AppConstants.testWordPosKey;
 import static com.clevy.ikravtsov.clevytest.AppConstants.typeInApp;
 import static com.clevy.ikravtsov.clevytest.AppConstants.typeSubs;
-import static com.clevy.ikravtsov.clevytest.AppConstants.unlimitSubId;
-import static com.clevy.ikravtsov.clevytest.AppConstants.yearlySubId;
+import static com.clevy.ikravtsov.clevytest.AppConstants.UNLIMITED_SUBSCRIBE_ID;
+import static com.clevy.ikravtsov.clevytest.AppConstants.YEAR_SUBSCRIBE_ID;
 
 
 public class MainActivity extends AppCompatActivity {
 
     Boolean isAlreadyBought = false;
+    TextToSpeech t1;
 
 
     public PendingIntent pendingEducateIntent, pendingNotifyIntent;
@@ -47,14 +62,29 @@ public class MainActivity extends AppCompatActivity {
     IInAppBillingService inAppBillingService;
 
     ServiceConnection serviceConnection;
+    private AssetManager mAssetManager;
+    private SoundPool mSoundPool;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         sharedPref = this.getSharedPreferences(
                 getString(R.string.preference_name), Context.MODE_PRIVATE);
+
+
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putInt(keyCurrentBlockIndex, 0);
+//        editor.putInt(keyCurrentWordIndex, 0);
+//        editor.putInt(testProgress, 0);
+//        editor.putInt(testBlockPosKey, 0);
+//        editor.putInt(testWordPosKey, 0);
+//        editor.putBoolean(isTestKey, false);
+//        editor.putInt("lessonNumb", 0);
+//        editor.apply();
 
         serviceConnection = new ServiceConnection() {
             @Override
@@ -86,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener startAction = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 doBillingMagic();
             }
         };
@@ -96,17 +128,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void doBillingMagic(){
 
-        ArrayList<String> possibleProductIds = new ArrayList<String>();
-
-        possibleProductIds.add(mounthlySubId);
-        possibleProductIds.add(yearlySubId);
-        possibleProductIds.add(unlimitSubId);
+        ArrayList<String> possibleProductIds = new ArrayList<>(Arrays.asList(
+                MONTHLY_SUBSCRIBE_ID,
+                YEAR_SUBSCRIBE_ID,
+                UNLIMITED_SUBSCRIBE_ID,
+                PROMO_1_ID,
+                PROMO_2_ID,
+                PROMO_3_ID));
 
         try {
 
             if (isTrialActive() || isAlreadyBought(possibleProductIds)){
-                set_alarms("Занятие начнется через 15 минут");
-                this.finish();
+                Intent intentEducate = new Intent(this, EducationActivity.class);
+
+                this.startActivity(intentEducate);
             }
             else {
 
@@ -115,8 +150,9 @@ public class MainActivity extends AppCompatActivity {
                 intentShowCase.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 this.startActivity(intentShowCase);
-                this.finish();
             }
+
+            this.finish();
 
         }
         catch (NullPointerException e) {
@@ -126,35 +162,6 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-
-    public  void set_alarms(String message) {
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        AlarmManager manager2 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        long interval = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
-
-        // TODO Do something with KITKAT
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            assert manager != null;
-            manager.setExact(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + interval,
-                    pendingEducateIntent
-            );
-
-            assert manager2 != null;
-            manager2.setExact(
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + interval - 10000,
-                    pendingNotifyIntent
-            );
-        }
-
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
-
     }
 
     private boolean hasPurchases(String type, ArrayList<String> possibleProductsIds) throws Exception {
@@ -210,11 +217,21 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("start_date", dateFormat.format(date));
             editor.apply();
+            isActive = true;
 
         }
         else {
             try {
                 date = dateFormat.parse(satartDate);
+
+                Date currentDate = new Date();
+
+                long diffInDays = (date.getTime() - currentDate.getTime()) / (24 * 60 * 60 * 1000);
+
+                if (diffInDays < TRIAL_DAYS_COUNT) {
+                    isActive = true;
+                }
+
             } catch (ParseException e) {
 
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -225,14 +242,6 @@ public class MainActivity extends AppCompatActivity {
 
                 e.printStackTrace();
 
-            }
-
-            Date currentDate = new Date();
-
-            long diffInDays = (date.getTime() - currentDate.getTime()) / (24 * 60 * 60 * 1000);
-
-            if (diffInDays < TRIAL_DAYS_COUNT) {
-                isActive = true;
             }
         }
 
