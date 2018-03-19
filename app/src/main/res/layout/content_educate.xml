@@ -58,19 +58,20 @@
 
         <Button
             android:id="@+id/next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="80dp"
             android:background="@drawable/circle_button"
             android:text="ПОНЯТНО!"
+
             android:textColor="#FFF"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
             android:text=""
             android:visibility="invisible" />
     </LinearLayout>

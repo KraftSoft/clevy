@@ -6,73 +6,87 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="25dp"
-            android:layout_marginTop="50dp"
-            app:srcCompat="@drawable/clevy_logo_2"
-            tools:layout_editor_absoluteX="82dp"
-            tools:layout_editor_absoluteY="21dp" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:text="Вместе с Clevy ваш ребенок будет учить 3 новых английских слова каждые 15 минут\nдаже во время игр и просмотра видео на Youtube."
-            android:textAlignment="center"
-
-            android:paddingRight="20dp"
-            android:paddingLeft="20dp"
-
-            android:layout_marginBottom="10dp"
-
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/button"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="За год ребенок выучит 3000 самых популярных английских слов для школьников. "
+            android:orientation="vertical">
 
-            android:paddingRight="20dp"
-            android:paddingLeft="20dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            android:textAlignment="center"
-            android:textSize="16sp" />
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="25dp"
+                    android:layout_marginTop="10dp"
+                    app:srcCompat="@drawable/clevy_logo_2"
+                    tools:layout_editor_absoluteX="82dp"
+                    tools:layout_editor_absoluteY="21dp" />
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
+                    android:layout_marginBottom="10dp"
+                    android:paddingLeft="20dp"
 
-        android:textAlignment="center"
-        android:orientation="vertical">
+                    android:paddingRight="20dp"
+                    android:text="Вместе с Clevy ваш ребенок будет учить 3 новых английских слова каждые 15 минут\nдаже во время игр и просмотра видео на Youtube."
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/circle_button"
-            android:text="Начать!"
-            android:textColor="#FFF"
-            android:textStyle="bold" />
-    </LinearLayout>
+                    android:textAlignment="center"
+
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/button"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView"
+                    app:layout_constraintStart_toStartOf="@+id/imageView"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="20dp"
+
+                    android:paddingRight="20dp"
+                    android:text="За год ребенок выучит 3000 самых популярных английских слов для школьников. "
+
+                    android:textAlignment="center"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="bottom"
+
+                android:orientation="vertical"
+                android:textAlignment="center">
+
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/circle_button"
+                    android:text="Начать!"
+                    android:textColor="#FFF"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

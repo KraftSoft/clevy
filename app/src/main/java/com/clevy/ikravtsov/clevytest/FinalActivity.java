@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,10 +73,6 @@ public class FinalActivity extends AppCompatActivity {
 
 
         Collections.shuffle(finalMove);
-
-//        int gifId = this.getResources().getIdentifier(finalMove.get(0),
-//                "assets", this.getApplicationContext().getPackageName());
-
 
         videoView = findViewById(R.id.videoView);
 
@@ -161,7 +156,7 @@ public class FinalActivity extends AppCompatActivity {
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         AlarmManager manager2 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        long interval = AlarmManager.INTERVAL_FIFTEEN_MINUTES/15/60 * 20; // TODO MAKE 15 minutes
+        long interval = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 
 
         if (manager != null && manager2 != null) {
