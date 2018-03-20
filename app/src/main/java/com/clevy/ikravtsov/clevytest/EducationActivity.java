@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import static com.clevy.ikravtsov.clevytest.AppConstants.*;
 
-public class EducationActivity extends AppCompatActivity {
+public final class EducationActivity extends AppCompatActivity {
 
     Button btnNext, btnSound;
 

@@ -42,7 +42,6 @@ public class FinalActivity extends AppCompatActivity {
     private AssetManager mAssetManager;
     private SoundPool mSoundPool;
     int congratulationsSound;
-    private VideoView videoView;
     private Context context;
 
 
@@ -65,7 +64,6 @@ public class FinalActivity extends AppCompatActivity {
         btnStartNow = findViewById(R.id.nextTest);
         btnStartWait = findViewById(R.id.waitForStart);
         progressBar = findViewById(R.id.progress_in_finish);
-        //ImageView congratulationImg = findViewById(R.id.congratulationImg);
         progressBar.setMax(TEST_PACKAGE_SIZE);
         progressBar.setProgress(currentProgress);
 
@@ -74,7 +72,7 @@ public class FinalActivity extends AppCompatActivity {
 
         Collections.shuffle(finalMove);
 
-        videoView = findViewById(R.id.videoView);
+        VideoView videoView = findViewById(R.id.videoView);
 
         int moveId = getResources().getIdentifier(finalMove.get(0),
                 "raw", getPackageName());
@@ -97,13 +95,6 @@ public class FinalActivity extends AppCompatActivity {
         videoView.start();
 
         context = this;
-
-
-//        Glide.with(this)
-//                .load(asseturl)
-//                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
-//                .into(congratulationImg);
-
 
         TextView textCongratulate = findViewById(R.id.textCongratulate);
 

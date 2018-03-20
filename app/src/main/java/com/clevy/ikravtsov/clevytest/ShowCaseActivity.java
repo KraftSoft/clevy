@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.vending.billing.IInAppBillingService;
 
@@ -258,9 +259,9 @@ public class ShowCaseActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+        PendingIntent pendingIntent = null;
+        if (buyIntentBundle != null) {
+            pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             try {
                 startIntentSenderForResult(pendingIntent.getIntentSender(),
                         REQUEST_CODE_BUY, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
@@ -268,6 +269,12 @@ public class ShowCaseActivity extends AppCompatActivity {
             } catch (IntentSender.SendIntentException e) {
                 e.printStackTrace();
             }
+        }
+        else {
+            Toast.makeText(this, "Произощла ошибка, попробуйте позже", Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
     @Override

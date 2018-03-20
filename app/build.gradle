@@ -30,8 +30,8 @@ android {
         applicationId "com.clevy.ikravtsov.clevytest"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 17
-        versionName "1.4.1"
+        versionCode 19
+        versionName "1.5.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.clevy
@@ -43,7 +43,6 @@ android {
             signingConfig signingConfigs.clevy
         }
         debug {
-            debuggable true
             signingConfig signingConfigs.clevy
             minifyEnabled true
         }
@@ -70,6 +69,7 @@ dependencies {
         transitive = true
     }
     compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.google.firebase:firebase-messaging:11.8.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
